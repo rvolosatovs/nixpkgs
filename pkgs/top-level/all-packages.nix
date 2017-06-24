@@ -16694,6 +16694,8 @@ with pkgs;
 
   mopidy-iris = callPackage ../applications/audio/mopidy-iris { };
 
+  mopidy-mpris = callPackage ../applications/audio/mopidy-mpris { };
+
   motif = callPackage ../development/libraries/motif { };
 
   mozplugger = callPackage ../applications/networking/browsers/mozilla-plugins/mozplugger {};
