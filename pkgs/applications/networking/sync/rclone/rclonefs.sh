@@ -1,0 +1,42 @@
+#!@shell@
+PATH=@coreutils@/bin:$PATH
+
+remote=$1
+mountpoint=$2
+shift 2
+
+# Process -o parameters
+while getopts :o: opts; do
+    case $opts in
+        o)
+            params=${OPTARG//,/ }
+            for param in $params; do
+                if [ "$param" == "rw"   ]; then continue; fi
+                if [ "$param" == "ro"   ]; then continue; fi
+                if [ "$param" == "dev"  ]; then continue; fi
+                if [ "$param" == "suid" ]; then continue; fi
+                if [ "$param" == "exec" ]; then continue; fi
+                if [ "$param" == "auto" ]; then continue; fi
+                if [ "$param" == "nodev" ]; then continue; fi
+                if [ "$param" == "nosuid" ]; then continue; fi
+                if [ "$param" == "noexec" ]; then continue; fi
+                if [ "$param" == "noauto" ]; then continue; fi
+                if [[ $param == x-systemd.* ]]; then continue; fi
+                trans="$trans --$param"
+            done
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG"
+            ;;
+    esac
+done
+
+# exec rclone
+trans="$trans $remote $mountpoint"
+PATH="/run/wrappers/bin:$PATH" @bin@/bin/rclone mount $trans &
+
+out=`ls -l $mountpoint`
+until [ "$out" != 'total 0' ]; do
+    out=`ls -l $mountpoint`
+    sleep 1
+done
