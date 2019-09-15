@@ -4,12 +4,22 @@ with python3Packages;
 
 buildPythonApplication rec {
   pname = "mbed-cli";
-  version = "1.9.1";
+  version = "1.10.1";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "1228plh55id03qywsw0ai88ypdpbh9iz18jfcyhn21pci7mj77fv";
+    sha256 = "150aldvj9msxdfdsn0mh2i706yiqp2h383ax9gmyn4nrfkf2yskz";
   };
+
+  buildInputs = [
+    git
+    mercurial
+  ];
+
+  propagatedBuildInputs = [
+    mbed-os-tools
+    pyserial
+  ];
 
   checkInputs = [
     git
