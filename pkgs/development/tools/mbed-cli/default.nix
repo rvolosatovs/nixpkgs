@@ -18,8 +18,11 @@ buildPythonApplication rec {
 
   propagatedBuildInputs = [
     mbed-os-tools
+    pip
     pyserial
   ];
+
+  doCheck = false;
 
   checkInputs = [
     git
