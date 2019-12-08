@@ -10346,6 +10346,8 @@ in
 
   pyrseas = callPackage ../development/tools/database/pyrseas { };
 
+  python-miio = callPackage ../development/tools/python-miio { };
+
   qtcreator = libsForQt5.callPackage ../development/tools/qtcreator { };
 
   r10k = callPackage ../tools/system/r10k { };
