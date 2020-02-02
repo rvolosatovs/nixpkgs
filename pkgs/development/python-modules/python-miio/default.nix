@@ -29,6 +29,10 @@ buildPythonPackage rec {
     pytest
   '';
 
+  patches = [
+    ./handshake.patch
+  ];
+
   meta = with stdenv.lib; {
     description = "Python library for interfacing with Xiaomi smart appliances";
     homepage = "https://github.com/rytilahti/python-miio";
