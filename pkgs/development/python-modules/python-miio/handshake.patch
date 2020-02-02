@@ -1,0 +1,19 @@
+diff --git a/miio/vacuum_cli.py b/miio/vacuum_cli.py
+index 816cea8..211df34 100644
+--- a/miio/vacuum_cli.py
++++ b/miio/vacuum_cli.py
+@@ -96,11 +96,12 @@ def cleanup(vac: miio.Vacuum, *args, **kwargs):
+ 
+ 
+ @cli.command()
++@click.option("--ip", envvar="MIROBO_IP", callback=validate_ip)
+ @click.option("--handshake", type=bool, default=False)
+-def discover(handshake):
++def discover(ip: str, handshake: bool):
+     """Search for robots in the network."""
+     if handshake:
+-        miio.Vacuum.discover()
++        miio.Vacuum.discover(ip)
+     else:
+         miio.Discovery.discover_mdns()
+ 
