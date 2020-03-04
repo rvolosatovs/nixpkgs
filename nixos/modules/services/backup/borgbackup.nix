@@ -47,7 +47,7 @@ let
       --exclude-from ${mkExcludeFile cfg} \
       $extraCreateArgs \
       "::$archiveName$archiveSuffix" \
-      "${concatStringsSep " " cfg.paths}"
+      ${escapeShellArgs cfg.paths}
   '' + optionalString cfg.appendFailedSuffix ''
     borg rename $extraArgs \
       "::$archiveName$archiveSuffix" "$archiveName"
