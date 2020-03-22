@@ -12,10 +12,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0sp3l5wa77klj34sqib95ppxyam53x3p57xk0y6gy2c3z29z6hs5";
+      sha256 = "13ywgyyxzlgks7nb17gwqjmdqjjmhc8si3iliv8jhf51lb3s865v";
       type = "gem";
     };
-    version = "3.16.1";
+    version = "3.17.0";
   };
   coderay = {
     groups = ["default"];
@@ -174,10 +174,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "18zbi46as4d2wn83safawciyny0g2sk7yz5fvjvqmfk4ywpfrwrr";
+      sha256 = "1414y2m2wkbm2d4yvvl9w8fg3jql338lldb1wz2bbf4imk4zq1iy";
       type = "gem";
     };
-    version = "1.8.11";
+    version = "1.8.12.travis.1116.9";
   };
   typhoeus = {
     dependencies = ["ethon"];
