@@ -1,4 +1,13 @@
-{ stdenv, buildGoPackage, fetchFromGitHub, git, gnupg, xclip, wl-clipboard, makeWrapper }:
+{ stdenv, makeWrapper
+, buildGoPackage, fetchFromGitHub
+, git
+, gnupg
+, xclip
+, wl-clipboard
+, passAlias ? false
+}:
+
+with stdenv.lib;
 
 buildGoPackage rec {
   pname = "gopass";
@@ -29,6 +38,8 @@ buildGoPackage rec {
     $bin/bin/gopass completion bash > $bin/share/bash-completion/completions/_gopass
     $bin/bin/gopass completion zsh  > $bin/share/zsh/site-functions/_gopass
     $bin/bin/gopass completion fish > $bin/share/fish/vendor_completions.d/gopass.fish
+  '' + optionalString passAlias ''
+    ln -s $bin/bin/gopass $bin/bin/pass
   '';
 
   postFixup = ''
