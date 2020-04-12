@@ -280,7 +280,7 @@ with super;
       owner = "luvit";
       repo = pname;
       rev = version;
-      sha256 = "0lg3kncaka1mx18k0w4wsylsa6xnp7m11n68wgn38sph7f2nn1x9";
+      sha256 = "0igbl36qz31xd3ckxlf6i8s91qwnp68h607pcpvmlg895dq43zl6";
     };
 
     # So we can be sure no internal dependency is used from the repo and that
