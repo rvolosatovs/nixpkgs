@@ -111,7 +111,7 @@ let
 
   mkBorgWrapper = name: cfg: mkWrapperDrv {
     original = "${pkgs.borgbackup}/bin/borg";
-    name = "borg-job-${name}";
+    name = builtins.replaceStrings ["@"] [""] "borg-job-${name}";
     set = { BORG_REPO = cfg.repo; } // (mkPassEnv cfg) // cfg.environment;
   };
 
