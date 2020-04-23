@@ -8533,8 +8533,6 @@ in
 
   gogetdoc = callPackage ../development/tools/gogetdoc { };
 
-  gometalinter = callPackage ../development/tools/gometalinter { };
-
   gox = callPackage ../development/tools/gox { };
 
   gprolog = callPackage ../development/compilers/gprolog { };
