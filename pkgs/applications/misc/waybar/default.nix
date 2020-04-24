@@ -1,7 +1,7 @@
 { stdenv, fetchFromGitHub, meson, pkgconfig, ninja, wrapGAppsHook
 , wayland, wlroots, gtkmm3, libinput, libsigcxx, jsoncpp, fmt, scdoc, spdlog, gtk-layer-shell
 , howard-hinnant-date, cmake
-, traySupport  ? true,  libdbusmenu-gtk3
+, traySupport  ? true,  libdbusmenu-gtk3, libappindicator-gtk3
 , pulseSupport ? false, libpulseaudio
 , nlSupport    ? true,  libnl
 , udevSupport  ? true,  udev
@@ -25,7 +25,7 @@
 
     buildInputs = with stdenv.lib;
       [ wayland wlroots gtkmm3 libinput libsigcxx jsoncpp fmt spdlog gtk-layer-shell howard-hinnant-date ]
-      ++ optional  traySupport  libdbusmenu-gtk3
+      ++ optionals traySupport  [ libdbusmenu-gtk3 libappindicator-gtk3 ]
       ++ optional  pulseSupport libpulseaudio
       ++ optional  nlSupport    libnl
       ++ optional  udevSupport  udev
