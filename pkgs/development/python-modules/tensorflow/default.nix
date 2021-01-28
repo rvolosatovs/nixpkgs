@@ -29,6 +29,13 @@
 , fmaSupport   ? stdenv.hostPlatform.fmaSupport
 # Darwin deps
 , Foundation, Security
+, version ? "2.4.1"
+, src ? fetchFromGitHub {
+      owner = "tensorflow";
+      repo = "tensorflow";
+      rev = "v${version}";
+      sha256 = "sha256-J62QfP45g5nxN9Nqa1tAGyc4vD2JKh50ddHLrd6/qsY=";
+    }
 }:
 
 assert cudaSupport -> cudatoolkit != null
@@ -72,7 +79,6 @@ let
 
   tfFeature = x: if x then "1" else "0";
 
-  version = "2.4.1";
   variant = if cudaSupport then "-gpu" else "";
   pname = "tensorflow${variant}";
 
@@ -106,12 +112,7 @@ let
     name = "${pname}-${version}";
     bazel = bazel_3;
 
-    src = fetchFromGitHub {
-      owner = "tensorflow";
-      repo = "tensorflow";
-      rev = "v${version}";
-      sha256 = "sha256-J62QfP45g5nxN9Nqa1tAGyc4vD2JKh50ddHLrd6/qsY=";
-    };
+    inherit src;
 
     patches = [
       # Relax too strict Python packages versions dependencies.
