@@ -2,13 +2,13 @@
 
 buildGoModule rec {
   pname = "gotools-unstable";
-  version = "2021-01-13";
-  rev = "8b4aab62c064010e8e875d2e5a8e63a96fefc87d";
+  version = "2021-02-05";
+  rev = "ef80cdb6ec6d94b8e8d05f986b368bf925fa330e";
 
   src = fetchgit {
     inherit rev;
     url = "https://go.googlesource.com/tools";
-    sha256 = "1cmnm9fl2a6hiplj8s6x0l3czcw4xh3j3lvzbgccnp1l8kz8q2vm";
+    sha256 = "0nrqj8qdv9gh4hryj9i0qsmjlrawykksqzij2qd9j25wr5hpq1g1";
   };
 
   # The gopls folder contains a Go submodule which causes a build failure.
@@ -25,7 +25,7 @@ buildGoModule rec {
     rm -rf gopls
   '';
 
-  vendorSha256 = "18qpjmmjpk322fvf81cafkpl3spv7hpdpymhympmld9isgzggfyz";
+  vendorSha256 = "0i2fhaj2fd8ii4av1qx87wjkngip9vih8v3i9yr3h28hkq68zkm5";
 
   doCheck = false;
 
