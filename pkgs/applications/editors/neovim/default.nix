@@ -37,8 +37,8 @@ in
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "1c2e504d5c394182d898dd161b9d9f75e1252b96";
-      sha256 = "1zb00b9fgih2fm8kvvz3s3qvjmq46qwjgy9vmyllx52k1ydpmv79";
+      rev = "141647cfbb1f137e3eefe6ba8e658b475e902cac";
+      sha256 = "0zn84qq0i1123mlxzss8pm58632wysy0fhyv82x028hmcall4cyg";
     };
 
     patches = [
