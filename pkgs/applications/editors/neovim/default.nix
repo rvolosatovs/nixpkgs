@@ -59,6 +59,7 @@ in
       msgpack
       ncurses
       neovimLuaEnv
+      tree-sitter
       unibilium
     ] ++ optional stdenv.isDarwin libiconv
       ++ optionals doCheck [ glibcLocales procps ]
@@ -97,8 +98,7 @@ in
       "-DGPERF_PRG=${gperf}/bin/gperf"
       "-DLUA_PRG=${neovimLuaEnv.interpreter}"
       "-DLIBLUV_LIBRARY=${luvpath}"
-      "-DTreeSitter_INCLUDE_DIR=${tree-sitter}/include"
-      "-DTreeSitter_LIBRARY=${tree-sitter}/lib/libtree-sitter.so"
+      "-DUSE_BUNDLED=OFF"
     ]
     ++ optional doCheck "-DBUSTED_PRG=${neovimLuaEnv}/bin/busted"
     ++ optional (!lua.pkgs.isLuaJIT) "-DPREFER_LUA=ON"
