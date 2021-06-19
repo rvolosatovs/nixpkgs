@@ -22,5 +22,8 @@ buildPythonPackage rec {
     description = "Python package for providing Mozilla's CA Bundle";
     license = licenses.isc;
     maintainers = with maintainers; [ ]; # NixOps team
+    knownVulnerabilities = [
+      "Python 2 supported for certifi ended in 2019 and shipping an outdated certificate store carries a non-negligble risk"
+    ];
   };
 }
