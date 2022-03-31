@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, cmake, scdoc, util-linux }:
+{ lib, stdenv, fetchFromGitHub, fetchpatch, cmake, scdoc, util-linux }:
 
 stdenv.mkDerivation rec {
   pname = "ydotool";
@@ -18,6 +18,13 @@ stdenv.mkDerivation rec {
     substituteInPlace ${placeholder "out"}/lib/systemd/user/ydotool.service \
       --replace /usr/bin/kill "${util-linux}/bin/kill"
   '';
+
+  patches = [
+    (fetchpatch {
+      url = "https://github.com/ReimuNotMoe/ydotool/commit/a324939d7b4c2276d83563fa4313447e969f67da.patch";
+      sha256 = "18br9fk8zkldqbq2qb6l3lqhvnsnfhx3ik5x7l6cznw8i16nc7bd";
+    })
+  ];
 
   meta = with lib; {
     homepage = "https://github.com/ReimuNotMoe/ydotool";
