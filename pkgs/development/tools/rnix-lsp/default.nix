@@ -2,16 +2,18 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "rnix-lsp";
-  version = "0.2.5";
+  version = "0.3.0-alejandra";
 
   src = fetchFromGitHub {
     owner = "nix-community";
     repo = "rnix-lsp";
-    rev = "v${version}";
-    sha256 = "sha256-WXpj2fgduYlF4t0QEvdfV1Eft8/nFXWF2zyEBKMUEIk=";
+    # https://github.com/nix-community/rnix-lsp/pull/89
+    rev = "9189b50b34285b2a9de36a439f6c990fd283c9c7";
+    sha256 = "sha256-ZnUtvwkcz7QlAiqQxhI4qVUhtVR+thLhG3wQlle7oZg=";
   };
 
-  cargoSha256 = "sha256-LfbmOhZJVthsLm8lnzHvEt7Vy27y4w4wpPfrf/s3s84=";
+  cargoSha256 = "sha256-VhE+DspQ0IZKf7rNkERA/gD7iMzjW4TnRSnYy1gdV0s=";
+  cargoBuildFlags = [ "--no-default-features" "--features" "alejandra" ];
 
   checkInputs = lib.optional (!stdenv.isDarwin) nix;
 
