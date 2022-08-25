@@ -11,16 +11,42 @@ with lib; let
   # TODO: Make FQDN configurable
   fqdn = config.networking.fqdn;
 
+  devices = with cfg.enarx;
+    if backend == "kvm"
+    then [
+      "/dev/kvm"
+    ]
+    else if backend == "sgx"
+    then [
+      "/dev/sgx_enclave"
+    ]
+    else if backend == "sev"
+    then [
+      "/dev/kvm"
+      "/dev/sev"
+    ]
+    else [];
+
   ss = "${pkgs.iproute}/bin/ss";
   conf.toml =
     ''
       runtime-dir = "/run/benefice"
       ss-command = "${ss}"
       oci-command = "${cfg.oci.command}"
+      oci-image = "${cfg.oci.image}"
       oidc-client = "${cfg.oidc.client}"
       oidc-issuer = "${cfg.oidc.issuer}"
       url = "https://${fqdn}"
+      devices = [ ${concatMapStringsSep "," (dev: ''"${dev}"'') devices} ]
     ''
+    + optionalString (cfg.enarx.backend == "sev") ''
+      privileged = true
+      paths = [ "/var/cache/amd-sev" ]
+    ''
+    + optionalString (cfg.enarx.backend == "sgx") ''
+      paths = [ "/var/run/aesmd/aesm.socket" ]
+    ''
+    + optionalString (cfg.oci.image != null) ''oci-image = "${cfg.oci.image}"''
     + optionalString (cfg.oidc.secretFile != null) ''oidc-secret = "${cfg.oidc.secretFile}"'';
 
   configFile = pkgs.writeText "conf.toml" conf.toml;
@@ -56,7 +82,10 @@ in {
       example = "https://auth.example.com";
       description = "OpenID Connect issuer URL.";
     };
-    enarx.backend = options.services.enarx.backend;
+    enarx.backend = mkOption {
+      type = types.enum ["nil" "kvm" "sgx" "sev"];
+      description = "Enarx backend to use.";
+    };
     oci.backend = mkOption {
       type = with types; nullOr (enum ["docker" "podman"]);
       default = "docker";
@@ -66,6 +95,12 @@ in {
     oci.command = mkOption {
       type = types.path;
       description = "OCI container engine command to use. This option must be set if and only if <option>services.benefice.oci.backend</option> is <literal>null</literal>.";
+    };
+    oci.image = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      example = "enarx/enarx:0.6.3";
+      description = "OCI container image to use.";
     };
   };
 
@@ -93,7 +128,9 @@ in {
         "systemd-udevd.service"
       ];
       systemd.services.benefice.description = "Benefice";
+      systemd.services.benefice.environment.ENARX_BACKEND = cfg.enarx.backend;
       systemd.services.benefice.environment.RUST_LOG = cfg.log.level;
+      systemd.services.benefice.serviceConfig.DeviceAllow = map (dev: "${dev} rw") devices;
       systemd.services.benefice.serviceConfig.DynamicUser = true;
       systemd.services.benefice.serviceConfig.ExecPaths = ["/nix/store"];
       systemd.services.benefice.serviceConfig.ExecStart = "${cfg.package}/bin/benefice @${configFile}";
@@ -133,10 +170,9 @@ in {
           configFile
         ]
         ++ optional (cfg.oidc.secretFile != null) cfg.oidc.secretFile;
+      systemd.services.benefice.unitConfig.AssertPathIsReadWrite = devices;
       systemd.services.benefice.wantedBy = ["multi-user.target"];
       systemd.services.benefice.wants = ["network-online.target"];
-
-      systemd.services.benefice.environment.ENARX_BACKEND = cfg.enarx.backend;
     }
     (mkIf (cfg.oci.backend == "docker") {
       assertions = [
@@ -156,30 +192,15 @@ in {
       ];
       services.benefice.oci.command = "${pkgs.podman}/bin/podman";
     })
-    (mkIf (cfg.enarx.backend == null) {
-      systemd.services.benefice.serviceConfig.DeviceAllow = [
-        "/dev/kvm rw"
-        "/dev/sev rw"
-        "/dev/sgx_enclave rw"
-        "/dev/sgx_provision rw"
-      ];
+    (mkIf (cfg.enarx.backend == "kvm") {
+      systemd.services.benefice.serviceConfig.SupplementaryGroups = ["kvm"];
     })
     (mkIf (cfg.enarx.backend == "sgx") {
-      systemd.services.benefice.serviceConfig.DeviceAllow = ["/dev/sgx_enclave rw"];
       systemd.services.benefice.serviceConfig.SupplementaryGroups = ["sgx"];
-      systemd.services.benefice.unitConfig.AssertPathIsReadWrite = ["/dev/sgx_enclave"];
     })
     (mkIf (cfg.enarx.backend == "sev") {
-      systemd.services.benefice.serviceConfig.DeviceAllow = [
-        "/dev/kvm rw"
-        "/dev/sev rw"
-      ];
       systemd.services.benefice.serviceConfig.LimitMEMLOCK = "8G";
       systemd.services.benefice.serviceConfig.SupplementaryGroups = [config.hardware.cpu.amd.sev.group];
-      systemd.services.benefice.unitConfig.AssertPathIsReadWrite = [
-        "/dev/kvm"
-        "/dev/sev"
-      ];
     })
   ]);
 }
